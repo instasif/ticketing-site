@@ -15,8 +15,8 @@ export default function Header() {
           <Link href={"/"}>
             <Image src={logo} alt="logo" width={100} height={100} className="w-24 lg:w-28" />
           </Link>
-
-          <div className="lg:hidden">
+          
+          <div className="block lg:hidden"> 
             <SignedIn>
               <UserButton />
             </SignedIn>
@@ -32,6 +32,46 @@ export default function Header() {
 
         <div className="w-full lg:max-w-2xl">
             <SearchBar />
+        </div>
+
+        {/* dekstop action button  */}
+        <div className="hidden lg:block ml-auto">
+          <SignedIn>
+            <div className="flex items-center gap-3">
+            <Link href={"/seller"}>
+              <button className="bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition">
+                Sell Ticket
+              </button>
+              </Link>
+
+              <Link href={"/tickets"}>
+              <button className="bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition">
+                My Tickets
+              </button>
+              </Link>
+              <UserButton />
+            </div>
+          </SignedIn>
+        </div>
+
+        {/* mobile action button  */}
+        <div className="lg:hidden flex justify-center w-full gap3">
+        <SignedIn>
+            <div className="flex items-center gap-3">
+            <Link href={"/seller"}>
+              <button className="w-full bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition">
+                Sell Ticket
+              </button>
+              </Link>
+
+              <Link href={"/tickets"}>
+              <button className="w-full bg-gray-100 text-gray-800 px-3 py-1.5 text-sm rounded-lg hover:bg-gray-200 transition border border-gray-300">
+                My Tickets
+              </button>
+              </Link>
+            </div>
+            
+          </SignedIn>
         </div>
       </div>
     </div>
