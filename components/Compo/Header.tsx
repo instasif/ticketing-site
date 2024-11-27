@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import logo from "@/images/logo.png";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import SearchBar from "@/components/Compo/SearchBar"
+import SearchBar from "@/components/Compo/SearchBar";
 
 export default function Header() {
   return (
@@ -45,7 +45,7 @@ export default function Header() {
               </Link>
 
               <Link href={"/tickets"}>
-              <button className="bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition">
+              <button className="w-full bg-gray-100 text-gray-800 px-3 py-1.5 text-sm rounded-lg hover:bg-gray-200 transition border border-gray-300">
                 My Tickets
               </button>
               </Link>

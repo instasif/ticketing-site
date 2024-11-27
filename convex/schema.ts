@@ -14,7 +14,7 @@ export default defineSchema({
         is_cancelled: v.optional(v.boolean()),
     }),
     
-    titckets: defineTable({
+    tickets: defineTable({
         eventId: v.id("events"),
         userId: v.string(),
         purchasedAt: v.number(),

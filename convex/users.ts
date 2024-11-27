@@ -34,3 +34,5 @@ export const updateUser = mutation({
         return newUserId;
     }
 })
+
+//1:43:06 Building the event list component

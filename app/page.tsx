@@ -1,9 +1,9 @@
+import EventList from "@/components/Compo/EventList";
 
 export default function Home() {
   return (
-    <div>
-    <h1>Welcome to ticketing site</h1>
-    
+    <div className="">
+    <EventList />
     </div>
   );
 }
