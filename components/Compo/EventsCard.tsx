@@ -22,7 +22,7 @@ export default function EventsCard({eventId}: {eventId: Id<"events">}) {
     })
 
     const imageUrl = useStorageUrl(event?.imageStorageId);
-
+    
   return (
     <></>
   )
