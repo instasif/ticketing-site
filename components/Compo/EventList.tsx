@@ -2,9 +2,9 @@
 
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import LoadingSkeleton from "./LoadingSkeleton";
 import { CalendarDays, Ticket } from "lucide-react";
 import EventsCard from "./EventsCard";
+import HomePageLoading from "./HomePageLoading";
 
 export default function EventList() {
   const events = useQuery(api.events.get);
@@ -12,9 +12,7 @@ export default function EventList() {
   if (!events) {
     // Return loading indicator until events data is available
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
-        <LoadingSkeleton />
-      </div>
+      <HomePageLoading />
     );
   }
 
@@ -26,9 +24,6 @@ export default function EventList() {
   const pastEvents = events
     ?.filter((event) => event.eventDate <= Date.now())
     .sort((a, b) => b.eventDate - a.eventDate);
-
-  console.log("upcoming events: ", upcomingEvents);
-  console.log("past events: ", pastEvents);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

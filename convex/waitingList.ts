@@ -37,7 +37,7 @@ export const getQueuePosition = query({
 
         return {
             ...entry,
-            possition: peopleAhead + 1
+            position: peopleAhead + 1
         }
     }
 })
