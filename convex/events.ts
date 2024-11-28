@@ -26,7 +26,7 @@ export const getEventAvailability = query({
         if (!event) throw new Error("Event not Found");
 
         // count total purchased tickets
-        const purchasedCount = await ctx.db
+        const purchasedCount = await ctx.db // count purchased offers
             .query("tickets")
             .withIndex("by_event", (query) => query.eq("eventId", eventId))
             .collect()
@@ -37,7 +37,7 @@ export const getEventAvailability = query({
             ).length
         )
 
-        // count valid offers
+        // count active offers
         const now = Date.now();
         const activeOffers = await ctx.db
             .query("waitingList")
