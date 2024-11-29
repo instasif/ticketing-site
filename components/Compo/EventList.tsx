@@ -11,9 +11,7 @@ export default function EventList() {
 
   if (!events) {
     // Return loading indicator until events data is available
-    return (
-      <HomePageLoading />
-    );
+    return <HomePageLoading />;
   }
 
   // Ensure events array is not empty
@@ -50,32 +48,30 @@ export default function EventList() {
       {upcomingEvents.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           {upcomingEvents.map((event, idx) => (
-             <EventsCard key={idx} eventId={event._id} />
+            <EventsCard key={idx} eventId={event._id} />
           ))}
         </div>
       ) : (
         <div className="bg-gray-50 rounded-lg p-12 text-center mb-12">
-            <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4"/>
+          <Ticket className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900">
             No upcoming events
           </h3>
-          <p className="text-gray-600 mt-1">
-            Check back later for new events
-          </p>
+          <p className="text-gray-600 mt-1">Check back later for new events</p>
         </div>
       )}
 
       {/* Past events grid */}
-      {pastEvents.length > 0 &&
+      {pastEvents.length > 0 && (
         <>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Past Events</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                {pastEvents.map((event, idx) => (
-                     <EventsCard key={idx} eventId={event._id} />
-                ))}
-             </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Past Events</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+            {pastEvents.map((event, idx) => (
+              <EventsCard key={idx} eventId={event._id} />
+            ))}
+          </div>
         </>
-      }
+      )}
     </div>
   );
 }
