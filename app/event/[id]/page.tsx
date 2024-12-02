@@ -5,11 +5,12 @@ import Spinner from "@/components/Compo/Spinner";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useStorageUrl } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { CalendarDays, MapPin, Ticket, Users } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
+import BuyTicketBtn from "@/components/Compo/BuyTicketBtn";
 
 export default function EventPage() {
   const { user } = useUser();
@@ -117,6 +118,18 @@ export default function EventPage() {
               <div className="">
                 <div className="sticky top-8 space-y-4">
                     <EventsCard eventId={params.id as Id<"events">}/>
+                    {user ? (
+                    <BuyTicketBtn
+                      eventId={params.id as Id<"events">}
+                      userId={user.id}
+                    />
+                  ) : (
+                    <SignInButton>
+                      <button className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-medium py-2 px-4 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+                        Sign in to buy tickets
+                      </button>
+                    </SignInButton>
+                  )}
                 </div>
               </div>
               {/* right column view - ticket purchase end  */}

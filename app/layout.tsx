@@ -5,6 +5,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { ConvexClientProvider } from "@/components/ConvexClientProvider";
 import Header from "@/components/Compo/Header";
 import SyncUserWithConvex from "@/components/Compo/SyncUserWithConvex";
+import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,6 +38,7 @@ export default function RootLayout({
           <Header />
           <SyncUserWithConvex />
         {children}
+        <Toaster />
         </ClerkProvider>
         </ConvexClientProvider>
       </body>
