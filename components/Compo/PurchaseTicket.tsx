@@ -14,7 +14,7 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
   const { user } = useUser();
   const queuePosition = useQuery(api.waitingList.getQueuePosition, {
     eventId,
-    userId: user?.id ?? "",
+    userId: user? user.id : "",
   });
 
   const [timeRemaining, setTimeRemaining] = useState("");
@@ -64,7 +64,7 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
               <div className="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center">
                 <Ticket className="w-6 h-6 text-amber-600" />
               </div>
-              <div className="">
+              <div>
                 <h3 className="text-lg font-semibold text-gray-900">
                   Ticket Reserved
                 </h3>
@@ -88,8 +88,9 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
         >
           {isLoading
             ? "Redirecting to checkout..."
-            : "Purchase Your Ticket Now ->"}
+            : "Purchase Your Ticket Now →"}
         </button>
+
         <div className="mt-4">
           <ReleaseTicket eventId={eventId} waitingListId={queuePosition?._id} />
         </div>

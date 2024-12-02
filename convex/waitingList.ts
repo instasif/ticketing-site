@@ -8,7 +8,7 @@ export const getQueuePosition = query({
     userId: v.string(),
   },
   handler: async (ctx, { eventId, userId }) => {
-    // get entry for this specific user and event combination
+    // Get entry for this specific user and event combination
     const entry = await ctx.db
       .query("waitingList")
       .withIndex("by_user_event", (q) =>
@@ -16,16 +16,16 @@ export const getQueuePosition = query({
       )
       .filter((q) => q.neq(q.field("status"), WAITING_LIST_STATUS.EXPIRED))
       .first();
+
     if (!entry) return null;
 
-    // get total number of people ahead in line
+    // Get total number of people ahead in line
     const peopleAhead = await ctx.db
       .query("waitingList")
+      .withIndex("by_event_status", (q) => q.eq("eventId", eventId))
       .filter((q) =>
         q.and(
-          // get all entries before this one
           q.lt(q.field("_creationTime"), entry._creationTime),
-          //only get entries that are either waiting or offered
           q.or(
             q.eq(q.field("status"), WAITING_LIST_STATUS.WAITING),
             q.eq(q.field("status"), WAITING_LIST_STATUS.OFFERED)
@@ -47,26 +47,25 @@ export const getQueuePosition = query({
  * Called by scheduled job when offer timer expires.
  */
 export const expireOffer = internalMutation({
-    args: {
-      waitingListId: v.id("waitingList"),
-      eventId: v.id("events"),
-    },
-    handler: async (ctx, { waitingListId, eventId }) => {
-      const offer = await ctx.db.get(waitingListId);
-  
-      //if offer is not found or is nor in OFFERED status, do nothing
-      if (!offer || offer.status !== WAITING_LIST_STATUS.OFFERED) return;
-  
-      await ctx.db.patch(waitingListId, {
-        status: WAITING_LIST_STATUS.EXPIRED,
-      });
-  
-      await processQueue(ctx, { eventId });
-    },
-  });
+  args: {
+    waitingListId: v.id("waitingList"),
+    eventId: v.id("events"),
+  },
+  handler: async (ctx, { waitingListId, eventId }) => {
+    const offer = await ctx.db.get(waitingListId);
 
-  //!----------------------------------------unfinished
-/*
+    //if offer is not found or is nor in OFFERED status, do nothing
+    if (!offer || offer.status !== WAITING_LIST_STATUS.OFFERED) return;
+
+    await ctx.db.patch(waitingListId, {
+      status: WAITING_LIST_STATUS.EXPIRED,
+    });
+
+    await processQueue(ctx, { eventId });
+  },
+});
+
+//!----------------------------------------unfinished
 export const releaseTicket = mutation({
   args: {
     eventId: v.id("events"),
@@ -86,6 +85,3 @@ export const releaseTicket = mutation({
     //Todo: process queue to offer ticket to next persion
   },
 });
-*/
-
-

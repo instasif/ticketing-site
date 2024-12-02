@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 import { query } from "./_generated/server"
 
-export const getUserTicketEvent = query({
+export const getUserTicketForEvent = query({
     args: {
         eventId: v.id("events"),
         userId: v.string(),

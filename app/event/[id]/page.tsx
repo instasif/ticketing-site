@@ -10,7 +10,7 @@ import { useQuery } from "convex/react";
 import { CalendarDays, MapPin, Ticket, Users } from "lucide-react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import BuyTicketBtn from "@/components/Compo/BuyTicketBtn";
+import BuyTicketBtn from "@/components/Compo/JoinQueue";
 
 export default function EventPage() {
   const { user } = useUser();

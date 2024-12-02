@@ -1,31 +1,31 @@
-"user client";
+"use client";
 
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
-import { useStorageUrl } from "@/lib/utils";
-import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
+import { Id } from "@/convex/_generated/dataModel";
 import {
   CalendarDays,
+  MapPin,
+  Ticket,
   Check,
   CircleArrowRight,
   LoaderCircle,
-  MapPin,
+  XCircle,
   PencilIcon,
   StarIcon,
-  Ticket,
-  XCircle,
 } from "lucide-react";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
 import PurchaseTicket from "./PurchaseTicket";
+import { useRouter } from "next/navigation";
+import { useStorageUrl } from "@/lib/utils";
+import Image from "next/image";
 
-export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
+export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
   const { user } = useUser();
   const router = useRouter();
   const event = useQuery(api.events.getById, { eventId });
   const availability = useQuery(api.events.getEventAvailability, { eventId });
-  const userTicket = useQuery(api.tickets.getUserTicketEvent, {
+  const userTicket = useQuery(api.tickets.getUserTicketForEvent, {
     eventId,
     userId: user?.id ?? "",
   });
@@ -33,7 +33,6 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
     eventId,
     userId: user?.id ?? "",
   });
-
   const imageUrl = useStorageUrl(event?.imageStorageId);
 
   if (!event || !availability) {
@@ -41,6 +40,7 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
   }
 
   const isPastEvent = event.eventDate < Date.now();
+
   const isEventOwner = user?.id === event?.userId;
 
   const renderQueuePosition = () => {
@@ -48,8 +48,8 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
 
     if (availability.purchasedCount >= availability.totalTickets) {
       return (
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border--gray-200">
-          <div className="flex justify-center">
+        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+          <div className="flex items-center">
             <Ticket className="w-5 h-5 text-gray-400 mr-2" />
             <span className="text-gray-600">Event is sold out</span>
           </div>
@@ -88,7 +88,7 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
     );
   };
 
-  const randerTicketStatus = () => {
+  const renderTicketStatus = () => {
     if (!user) return null;
 
     if (isEventOwner) {
@@ -134,9 +134,9 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
             <PurchaseTicket eventId={eventId} />
           )}
           {renderQueuePosition()}
-          {queuePosition.status == "expired" && (
+          {queuePosition.status === "expired" && (
             <div className="p-3 bg-red-50 rounded-lg border border-red-100">
-              <span className="text-red-700 font-medium items-center">
+              <span className="text-red-700 font-medium flex items-center">
                 <XCircle className="w-5 h-5 mr-2" />
                 Offer expired
               </span>
@@ -145,13 +145,16 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
         </div>
       );
     }
+
     return null;
   };
 
   return (
     <div
       onClick={() => router.push(`/event/${eventId}`)}
-      className={`bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 cursor-pointer overflow-hidden relative ${isPastEvent ? "opacity-75 hover:opacity-100" : ""}`}
+      className={`bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 cursor-pointer overflow-hidden relative ${
+        isPastEvent ? "opacity-75 hover:opacity-100" : ""
+      }`}
     >
       {/* Event Image */}
       {imageUrl && (
@@ -163,15 +166,13 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
       )}
 
-      {/* events details */}
       <div className={`p-6 ${imageUrl ? "relative" : ""}`}>
         <div className="flex justify-between items-start">
-          {/* Event name & own badge */}
-          <div className="">
+          <div>
             <div className="flex flex-col items-start gap-2">
               {isEventOwner && (
                 <span className="inline-flex items-center gap-1 bg-blue-600/90 text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -187,22 +188,26 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
               </span>
             )}
           </div>
-        </div>
-        {/* Price Tag  */}
-        <div className="flex flex-col items-end gap-2 ml-4">
-          <span
-            className={`px-4 py-1.5 font-semibold rounded-full ${isPastEvent ? "bg-gray-50 text-gray-500" : "bg-green-50 text-green-500"}`}
-          >
-            £{event.price.toFixed(2)}
-          </span>
-          {availability.purchasedCount >= availability.totalTickets && (
-            <span className="px-4 py-1.4 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
-              Sold Out
+
+          {/* Price Tag */}
+          <div className="flex flex-col items-end gap-2 ml-4">
+            <span
+              className={`px-4 py-1.5 font-semibold rounded-full ${
+                isPastEvent
+                  ? "bg-gray-50 text-gray-500"
+                  : "bg-green-50 text-green-700"
+              }`}
+            >
+              £{event.price.toFixed(2)}
             </span>
-          )}
+            {availability.purchasedCount >= availability.totalTickets && (
+              <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
+                Sold Out
+              </span>
+            )}
+          </div>
         </div>
 
-        {/* event details */}
         <div className="mt-4 space-y-3">
           <div className="flex items-center text-gray-600">
             <MapPin className="w-4 h-4 mr-2" />
@@ -217,27 +222,28 @@ export default function EventsCard({ eventId }: { eventId: Id<"events"> }) {
             </span>
           </div>
 
-          {/* Ticket */}
           <div className="flex items-center text-gray-600">
             <Ticket className="w-4 h-4 mr-2" />
             <span>
               {availability.totalTickets - availability.purchasedCount} /{" "}
               {availability.totalTickets} available
+              {!isPastEvent && availability.activeOffers > 0 && (
+                <span className="text-amber-600 text-sm ml-2">
+                  ({availability.activeOffers}{" "}
+                  {availability.activeOffers === 1 ? "person" : "people"} trying
+                  to buy)
+                </span>
+              )}
             </span>
-            {!isPastEvent && availability.activeOffers > 0 && (
-              <span className="text-amber-600 text-sm ml-2">
-                ({availability.activeOffers}{" "}
-                {availability.activeOffers === 1 ? "person" : "people"} trying
-                to by )
-              </span>
-            )}
           </div>
         </div>
-        <p className="mt-4 text-gray-600 text--sm line-clamp-2">
+
+        <p className="mt-4 text-gray-600 text-sm line-clamp-2">
           {event.description}
         </p>
+
         <div onClick={(e) => e.stopPropagation()}>
-          {!isPastEvent && randerTicketStatus()}
+          {!isPastEvent && renderTicketStatus()}
         </div>
       </div>
     </div>
