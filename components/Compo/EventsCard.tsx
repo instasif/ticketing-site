@@ -170,8 +170,10 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
         </div>
       )}
 
+      {/* Event details */}
       <div className={`p-6 ${imageUrl ? "relative" : ""}`}>
         <div className="flex justify-between items-start">
+          {/* event name and owner badge */}
           <div>
             <div className="flex flex-col items-start gap-2">
               {isEventOwner && (
@@ -198,7 +200,7 @@ export default function EventCard({ eventId }: { eventId: Id<"events"> }) {
                   : "bg-green-50 text-green-700"
               }`}
             >
-              £{event.price.toFixed(2)}
+              £{event.price.toFixed(2)} 
             </span>
             {availability.purchasedCount >= availability.totalTickets && (
               <span className="px-4 py-1.5 bg-red-50 text-red-700 font-semibold rounded-full text-sm">
