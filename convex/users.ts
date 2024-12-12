@@ -72,4 +72,4 @@ export const updateOrCreateUserStripeConnectId = mutation({
 
     await ctx.db.patch(user._id, { stripeConnectId: args.stripeConnectId });
   },
-});
+})
