@@ -32,7 +32,7 @@ export async function createStripeCheckoutSession({
   const queuePosition = await convex.query(api.waitingList.getQueuePosition, {
     eventId,
     userId,
-  });
+  })
 
   if (!queuePosition || queuePosition.status !== "offered") {
     throw new Error("No valid ticket offer found");
