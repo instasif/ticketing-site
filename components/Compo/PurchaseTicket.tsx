@@ -1,27 +1,25 @@
 "use client";
 
-import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
-import { useUser } from "@clerk/nextjs";
-import { useQuery } from "convex/react";
-import { Ticket } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { api } from "@/convex/_generated/api";
+import { useQuery } from "convex/react";
 import ReleaseTicket from "./ReleaseTicket";
+import { Ticket } from "lucide-react";
 
 export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
-  const router = useRouter();
   const { user } = useUser();
   const queuePosition = useQuery(api.waitingList.getQueuePosition, {
     eventId,
-    userId: user? user.id : "",
+    userId: user?.id ?? "",
   });
 
   const [timeRemaining, setTimeRemaining] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const offerExpireAt = queuePosition?.offerExpiresAt ?? 0;
-  const isExpired = Date.now() > offerExpireAt;
+  const offerExpiresAt = queuePosition?.offerExpiresAt ?? 0;
+  const isExpired = Date.now() > offerExpiresAt;
 
   useEffect(() => {
     const calculateTimeRemaining = () => {
@@ -30,30 +28,37 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
         return;
       }
 
-      const diff = offerExpireAt - Date.now();
+      const diff = offerExpiresAt - Date.now();
       const minutes = Math.floor(diff / 1000 / 60);
-      const seconds = Math.floor((diff / 100) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
 
       if (minutes > 0) {
         setTimeRemaining(
-          `${minutes} minute${minutes === 1 ? "" : "s"} ${seconds} second${seconds === 1 ? "" : "s"}`
+          `${minutes} minute${minutes === 1 ? "" : "s"} ${seconds} second${
+            seconds === 1 ? "" : "s"
+          }`
         );
       } else {
-        setTimeRemaining(`${seconds} seconds${seconds === 1 ? "" : "s"}`);
+        setTimeRemaining(`${seconds} second${seconds === 1 ? "" : "s"}`);
       }
     };
+
     calculateTimeRemaining();
-
-    const interval = setInterval(calculateTimeRemaining, 100);
+    const interval = setInterval(calculateTimeRemaining, 1000);
     return () => clearInterval(interval);
-  }, [offerExpireAt, isExpired]);
+  }, [offerExpiresAt, isExpired]);
 
-  // create stripe checkout...
-  const handlePurchase = async () => {
-    if (!user || !queuePosition || queuePosition.status !== "offered") {
-      return null;
-    }
-  };
+ // create stripe checkout...
+ const handlePurchase = async () => {
+  if (!user || !queuePosition || queuePosition.status !== "offered") {
+    return null;
+  }
+  setIsLoading(true);
+};
+
+  if (!user || !queuePosition || queuePosition.status !== "offered") {
+    return null;
+  }
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg border border-amber-200">
@@ -92,7 +97,7 @@ export default function PurchaseTicket({ eventId }: { eventId: Id<"events"> }) {
         </button>
 
         <div className="mt-4">
-          <ReleaseTicket eventId={eventId} waitingListId={queuePosition?._id} />
+          <ReleaseTicket eventId={eventId} waitingListId={queuePosition._id} />
         </div>
       </div>
     </div>
