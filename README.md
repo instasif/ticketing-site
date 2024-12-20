@@ -1,5 +1,7 @@
 Live site: [Link](https://ticketing-site-two.vercel.app/)
-
+test user: 
+email: kaxic64082@kindomd.com
+pass: chandpurasi
 
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
