@@ -71,13 +71,13 @@ export async function createStripeCheckoutSession({
               name: event.name,
               description: event.description,
             },
-            unit_amount: Math.round(event.price * 100),
+            unit_amount: Math.round(event.price * 100), // stripe excets the amount in cents
           },
           quantity: 1,
         },
       ],
       payment_intent_data: {
-        application_fee_amount: Math.round(event.price * 100 * 0.01),
+        application_fee_amount: Math.round(event.price * 100 * 0.01), // 1% fee
       },
       expires_at: Math.floor(Date.now() / 1000) + DURATIONS.TICKET_OFFER / 1000, // 30 minutes (stripe checkout minimum expiration time)
       mode: "payment",

@@ -1,4 +1,4 @@
-("user server");
+"use server";
 
 import { api } from "@/convex/_generated/api";
 import { stripe } from "@/lib/stripe";
